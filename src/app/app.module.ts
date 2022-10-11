@@ -6,20 +6,22 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
+import { CitiesComponent } from './cities/cities.component';
+import { AngularMaterialModule } from './angular-material.module';
 @NgModule({
-  declarations: [AppComponent, HomeComponent, NavMenuComponent],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    NavMenuComponent,
+    CitiesComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AngularMaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
