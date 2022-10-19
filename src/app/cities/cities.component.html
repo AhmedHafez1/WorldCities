@@ -3,6 +3,16 @@
 
 <p *ngIf="!cities"><em>Loading...</em></p>
 
+<button
+  mat-flat-button
+  color="primary"
+  class="btn-add"
+  *ngIf="cities"
+  [routerLink]="['add']"
+>
+  Add a new City
+</button>
+
 <mat-form-field [hidden]="!cities">
   <input
     matInput

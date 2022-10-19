@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'cities', component: CitiesComponent },
+  { path: 'cities/add', component: CityEditComponent },
   { path: 'cities/:id', component: CityEditComponent },
   { path: 'countries', component: CountriesComponent },
   { path: '**', component: HomeComponent },
