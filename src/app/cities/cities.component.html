@@ -27,7 +27,12 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header>
       {{ displayedColumn | uppercase }}
     </th>
-    <td mat-cell *matCellDef="let city">{{ city[displayedColumn] }}</td>
+    <td mat-cell *matCellDef="let city">
+      <span *ngIf="displayedColumn !== 'edit'">{{
+        city[displayedColumn]
+      }}</span>
+      <a [routerLink]="[city.id]" *ngIf="displayedColumn === 'edit'">Edit</a>
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
