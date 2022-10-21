@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Country } from '../countries/country';
 import { City } from './city';
@@ -26,12 +27,16 @@ export class CityEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      name: new FormControl('', Validators.required),
-      lat: new FormControl('', Validators.required),
-      lon: new FormControl('', Validators.required),
-      countryId: new FormControl('', Validators.required),
-    });
+    this.form = new FormGroup(
+      {
+        name: new FormControl('', Validators.required),
+        lat: new FormControl('', Validators.required),
+        lon: new FormControl('', Validators.required),
+        countryId: new FormControl('', Validators.required),
+      },
+      null,
+      this.isCityExist.bind(this)
+    );
 
     this.loadData();
   }
@@ -84,5 +89,21 @@ export class CityEditComponent implements OnInit {
         });
       }
     }
+  }
+
+  private isCityExist(): Observable<{ [key: string]: boolean } | null> {
+    const city: City = {
+      id: this.id ?? 0,
+      name: this.form.value['name'],
+      lat: +this.form.value['lat'],
+      lon: +this.form.value['lon'],
+      countryId: this.form.value['countryId'],
+    };
+
+    return this.http.post<boolean>(this.url + 'IsCityExist', city).pipe(
+      map((result) => {
+        return result ? { isCityExist: true } : null;
+      })
+    );
   }
 }
