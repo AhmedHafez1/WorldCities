@@ -3,19 +3,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Country } from './country';
 
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
-  styleUrls: ['./countries.component.scss']
+  styleUrls: ['./countries.component.scss'],
 })
 export class CountriesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  public displayedColumns: string[] = ['id', 'name', 'iso2', 'iso3'];
+  public displayedColumns: string[] = ['id', 'name', 'iso2', 'iso3', 'edit'];
   public countries!: MatTableDataSource<Country>;
 
   private defaultPageIndex = 0;
@@ -23,6 +24,8 @@ export class CountriesComponent implements OnInit {
 
   defaultFilterColumn = 'name';
   filterText?: string;
+
+  private filterTextChanged: Subject<string> = new Subject();
 
   constructor(private http: HttpClient) {}
 
@@ -64,4 +67,13 @@ export class CountriesComponent implements OnInit {
       });
   }
 
+  onFilterTextChanged(filterText: string) {
+    this.filterTextChanged.next(filterText);
+  }
+
+  subscribeToFilterTextChange() {
+    this.filterTextChanged
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((filterText) => this.loadData(filterText));
+  }
 }

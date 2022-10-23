@@ -3,13 +3,7 @@
 
 <p *ngIf="!cities"><em>Loading...</em></p>
 
-<button
-  mat-flat-button
-  color="primary"
-  class="btn-add"
-  *ngIf="cities"
-  [routerLink]="['add']"
->
+<button mat-flat-button color="primary" class="btn-add" [routerLink]="['add']">
   Add a new City
 </button>
 
@@ -17,7 +11,7 @@
   <input
     matInput
     #filter
-    (keyup)="loadData(filter.value)"
+    (keyup)="onFilterTextChanged(filter.value)"
     placeholder="Filter by name (or part of it)..."
   />
 </mat-form-field>

@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { BaseFormComponent } from '../base-form.component';
 import { Country } from '../countries/country';
 import { City } from './city';
 
@@ -12,9 +13,8 @@ import { City } from './city';
   templateUrl: './city-edit.component.html',
   styleUrls: ['./city-edit.component.scss'],
 })
-export class CityEditComponent implements OnInit {
+export class CityEditComponent extends BaseFormComponent implements OnInit {
   title!: string;
-  form!: FormGroup;
   id!: number;
   city!: City;
   private url = environment.baseUrl + 'api/Cities/';
@@ -24,7 +24,9 @@ export class CityEditComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private http: HttpClient
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = new FormGroup(

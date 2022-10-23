@@ -4,33 +4,32 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <p>
       <mat-error *ngIf="form.invalid && form.hasError('isCityExist')">
-      <strong>ERROR</strong>:
-      A city with the same <i>name</i>, <i>lat</i>,
-      <i>lon</i> and <i>country</i> already exists.
+        <strong>ERROR</strong>: A city with the same <i>name</i>, <i>lat</i>,
+        <i>lon</i> and <i>country</i> already exists.
       </mat-error>
-      </p>
+    </p>
     <!-- Name -->
     <mat-form-field>
       <mat-label>Name:</mat-label>
       <input matInput formControlName="name" placeholder="Type a name" />
-      <mat-error *ngIf="this.form.controls['name'].errors?.['required']">
-        Name is required.
+      <mat-error *ngFor="let error of getErrors(form.get('name')!, 'Name')">
+        {{ error }}
       </mat-error>
     </mat-form-field>
     <!-- Lat -->
     <mat-form-field>
       <mat-label>Latitude:</mat-label>
       <input matInput formControlName="lat" placeholder="Insert latitude" />
-      <mat-error *ngIf="this.form.controls['lat'].errors?.['required']">
-        Latitude is required.
+      <mat-error *ngFor="let error of getErrors(form.get('lat')!, 'Latitude')">
+        {{ error }}
       </mat-error>
     </mat-form-field>
     <!-- Lon -->
     <mat-form-field>
       <mat-label>Longitude:</mat-label>
       <input matInput formControlName="lon" placeholder="Insert longitude" />
-      <mat-error *ngIf="this.form.controls['lon'].errors?.['required']">
-        Longitude is required.
+      <mat-error *ngFor="let error of getErrors(form.get('lon')!, 'Longitude')">
+        {{ error }}
       </mat-error>
     </mat-form-field>
     <!-- Country -->
@@ -41,8 +40,10 @@
           {{ country.name }}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="this.form.controls['countryId'].errors?.['required']">
-        Please select a Country.
+      <mat-error
+        *ngFor="let error of getErrors(form.get('countryId')!, 'Country')"
+      >
+        {{ error }}
       </mat-error>
     </mat-form-field>
     <div>
