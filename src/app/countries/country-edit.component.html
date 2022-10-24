@@ -25,7 +25,13 @@
       />
       <mat-error
         *ngFor="
-          let error of getErrors(form.controls['iso2'], 'ALPHA-2 Country code')
+          let error of getErrors(
+            form.controls['iso2'],
+            'ALPHA-2 Country code',
+            {
+              pattern: 'requires 2 letters'
+            }
+          )
         "
       >
         {{ error }}
@@ -41,7 +47,13 @@
       />
       <mat-error
         *ngFor="
-          let error of getErrors(form.controls['iso3'], 'ALPHA-3 Country code')
+          let error of getErrors(
+            form.controls['iso3'],
+            'ALPHA-3 Country code',
+            {
+              pattern: 'requires 3 letters'
+            }
+          )
         "
       >
         {{ error }}
