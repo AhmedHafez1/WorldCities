@@ -16,7 +16,14 @@ export class CountriesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  public displayedColumns: string[] = ['id', 'name', 'iso2', 'iso3', 'edit'];
+  public displayedColumns: string[] = [
+    'id',
+    'name',
+    'iso2',
+    'iso3',
+    'totCities',
+    'edit',
+  ];
   public countries!: MatTableDataSource<Country>;
 
   private defaultPageIndex = 0;

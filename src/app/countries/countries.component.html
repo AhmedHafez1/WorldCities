@@ -29,7 +29,10 @@
     *ngFor="let displayedColumn of displayedColumns"
   >
     <th mat-header-cell *matHeaderCellDef mat-sort-header>
-      {{ displayedColumn | uppercase }}
+      <span [ngSwitch]="displayedColumn">
+        <span *ngSwitchCase="'totCities'">Total Cities</span>
+        <span *ngSwitchDefault>{{ displayedColumn | uppercase }}</span>
+      </span>
     </th>
     <td mat-cell *matCellDef="let country">
       <span *ngIf="displayedColumn !== 'edit'">{{
