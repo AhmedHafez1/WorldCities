@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { CityService } from './city.service';
 @Component({
   selector: 'app-cities',
   templateUrl: './cities.component.html',
@@ -15,7 +16,14 @@ export class CitiesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon', 'edit'];
+  public displayedColumns: string[] = [
+    'id',
+    'name',
+    'lat',
+    'lon',
+    'countryName',
+    'edit',
+  ];
   public cities!: MatTableDataSource<City>;
 
   private defaultPageIndex = 0;
@@ -26,11 +34,15 @@ export class CitiesComponent implements OnInit {
 
   private filterTextChanged: Subject<string> = new Subject();
 
-  constructor(private http: HttpClient) {}
+  constructor(private cityService: CityService) {}
 
   ngOnInit() {
     this.loadData();
     this.subscribeToFilterTextChange();
+  }
+
+  isNormalColumn(col: string) {
+    return ['id', 'name', 'lat', 'lon'].includes(col);
   }
 
   loadData(filterText?: string) {
@@ -42,20 +54,15 @@ export class CitiesComponent implements OnInit {
   }
 
   getData(event: PageEvent) {
-    let params = new HttpParams()
-      .set('pageIndex', event.pageIndex)
-      .set('pageSize', event.pageSize)
-      .set('sortColumn', this.sort?.active || 'name')
-      .set('sortOrder', this.sort?.direction || 'asc');
-
-    if (this.filterText) {
-      params = params
-        .set('filterColumn', this.defaultFilterColumn)
-        .set('filterText', this.filterText);
-    }
-
-    this.http
-      .get<any>(environment.baseUrl + 'api/Cities', { params })
+    this.cityService
+      .getData(
+        event.pageIndex,
+        event.pageSize,
+        this.sort?.active || 'name',
+        this.sort?.direction || 'asc',
+        this.defaultFilterColumn,
+        this.filterText
+      )
       .subscribe({
         next: (result) => {
           this.cities = new MatTableDataSource<City>(result.data);

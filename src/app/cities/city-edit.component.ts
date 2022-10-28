@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { BaseFormComponent } from '../base-form.component';
 import { Country } from '../countries/country';
 import { City } from './city';
+import { CityService } from './city.service';
 
 @Component({
   selector: 'app-city-edit',
@@ -23,7 +24,7 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private cityService: CityService
   ) {
     super();
   }
@@ -56,7 +57,7 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
     this.id = paramId ? +paramId : 0;
 
     if (this.id) {
-      this.http.get<City>(this.url + this.id).subscribe((result) => {
+      this.cityService.get(this.id).subscribe((result) => {
         this.city = result;
         this.form.patchValue(result);
         this.title = `Edit - ${result.name}`;
@@ -67,13 +68,7 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   }
 
   loadCountries() {
-    // fetch all the countries from the server
-    var url = environment.baseUrl + 'api/Countries';
-    var params = new HttpParams()
-      .set('pageIndex', '0')
-      .set('pageSize', '999')
-      .set('sortColumn', 'name');
-    this.http.get<any>(url, { params }).subscribe((result) => {
+    this.cityService.getCountries().subscribe((result) => {
       this.countries = result.data;
     });
   }
@@ -81,8 +76,8 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       if (this.id) {
-        this.http
-          .put<City>(this.url + this.id, {
+        this.cityService
+          .edit({
             ...this.form.value,
             id: this.id,
           })
@@ -91,7 +86,7 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
             this.router.navigate(['/cities']);
           });
       } else {
-        this.http.post<City>(this.url, this.form.value).subscribe((result) => {
+        this.cityService.add(this.form.value).subscribe((result) => {
           console.log('City ' + result.id + ' has been updated.\n' + result);
           this.router.navigate(['/cities']);
         });
@@ -100,18 +95,12 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   }
 
   private isCityExist(): Observable<{ [key: string]: boolean } | null> {
-    const city: City = {
-      id: this.id ?? 0,
-      name: this.form.value['name'],
-      lat: +this.form.value['lat'],
-      lon: +this.form.value['lon'],
-      countryId: this.form.value['countryId'],
-    };
-
-    return this.http.post<boolean>(this.url + 'IsCityExist', city).pipe(
-      map((result) => {
-        return result ? { isCityExist: true } : null;
-      })
-    );
+    return this.cityService
+      .isCityExist({ ...this.form.value, id: this.id ?? 0 })
+      .pipe(
+        map((result) => {
+          return result ? { isCityExist: true } : null;
+        })
+      );
   }
 }
