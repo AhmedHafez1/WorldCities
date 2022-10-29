@@ -9,6 +9,10 @@ import { City } from './city';
   providedIn: 'root',
 })
 export class CityService extends BaseService<City> {
+  constructor(http: HttpClient) {
+    super(http);
+  }
+
   getData(
     pageIndex: number,
     pageSize: number,

@@ -1,11 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { Country } from './country';
+import { CountryService } from './country.service';
 
 @Component({
   selector: 'app-countries',
@@ -34,7 +33,7 @@ export class CountriesComponent implements OnInit {
 
   private filterTextChanged: Subject<string> = new Subject();
 
-  constructor(private http: HttpClient) {}
+  constructor(private countryService: CountryService) {}
 
   ngOnInit() {
     this.loadData();
@@ -49,20 +48,15 @@ export class CountriesComponent implements OnInit {
   }
 
   getData(event: PageEvent) {
-    let params = new HttpParams()
-      .set('pageIndex', event.pageIndex)
-      .set('pageSize', event.pageSize)
-      .set('sortColumn', this.sort?.active || 'name')
-      .set('sortOrder', this.sort?.direction || 'asc');
-
-    if (this.filterText) {
-      params = params
-        .set('filterColumn', this.defaultFilterColumn)
-        .set('filterText', this.filterText);
-    }
-
-    this.http
-      .get<any>(environment.baseUrl + 'api/Countries', { params })
+    this.countryService
+      .getData(
+        event.pageIndex,
+        event.pageSize,
+        this.sort?.active || 'name',
+        this.sort?.direction || 'asc',
+        this.defaultFilterColumn,
+        this.filterText
+      )
       .subscribe({
         next: (result) => {
           this.countries = new MatTableDataSource<Country>(result.data);
