@@ -74,11 +74,13 @@ export class CountryEditComponent extends BaseFormComponent implements OnInit {
     if (this.form.valid) {
       if (this.id) {
         // EDIT mode
-        this.countryService.edit(this.form.value).subscribe((result) => {
-          console.log('Country ' + this.id + ' has been updated.');
-          // go back to countries view
-          this.router.navigate(['/countries']);
-        });
+        this.countryService
+          .edit({ ...this.form.value, id: this.id })
+          .subscribe((result) => {
+            console.log('Country ' + this.id + ' has been updated.');
+            // go back to countries view
+            this.router.navigate(['/countries']);
+          });
       } else {
         // ADD NEW mode
         var url = environment.baseUrl + 'api/Countries';
